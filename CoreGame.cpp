@@ -1,55 +1,109 @@
 #include <iostream>
-#include <string>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include "RecordSave.cpp"
 
-class CoreGame { 
-  public: 
+class CoreGame {
+  public:
     int pitchlocation, pitchguess, strikes;
-  int running, outs, hits;
+  int running, outs, hits, cpuhits;
   void offense();
+};
+class CoreGameDefense {
+  public:
+    int pitchlocation, pitchguess, strikes;
+  int running, outs, hits, cpuhits;
+  void defense();
 };
 
 void CoreGame::offense() {
-  CoreGame Game;
-  RecordSave RecordSave;
+  CoreGame Offense;
   //redeclaring potentially problematic variables
-  Game.strikes = 0;
-  Game.pitchlocation = 0;
-  Game.outs = 0;
-  Game.running = 0;
+  Offense.strikes = 0;
+  Offense.pitchlocation = 0;
+  Offense.pitchguess = 0;
+  Offense.outs = 0;
+  Offense.running = 0;
+  Offense.hits = 0;
 
   do {
     srand(time(NULL));
-    Game.pitchlocation = rand() % 6 + 1;
+    Offense.pitchlocation = rand() % 6 + 1;
 
-    std::cout << "Get Ready for the pitch! ||" << "Strikes:" << Game.strikes 
-    << "||\nType a location (number from 1 to 6) to guess where the offense will pitch" << "\n";
-    std::cin >> Game.pitchguess;
+    std::cout << "Get Ready for the pitch! ||" << "Strikes:" << Offense.strikes <<
+      "||\nType a location (number from 1 to 6) to guess where the offense will pitch" << "\n";
+    std::cin >> (Offense.pitchguess);
 
-    if (Game.pitchguess == Game.pitchlocation) {
+    if (Offense.pitchguess == Offense.pitchlocation) {
       std::cout << "Swing and a hit!\n";
-      Game.hits++;
-    } 
-    else {
-      std::cout << "Swing and a miss\n";
-      Game.strikes = Game.strikes + 1;
-      if (Game.strikes == 3) {
-        Game.outs++;
-        std::cout << "Out #" << Game.outs << "!\n";
-        Game.strikes = 0;
+      Offense.hits++;
+    } else {
+      if (Offense.pitchguess > 6 || Offense.pitchguess < 1) {
+        std::cout << "Invalid Input. Skipping to next inning.\n";
+        //fixing input buffer for reuse
+        std::cin.clear();
+        std::cin.ignore(10000, '\n');
+        Offense.running++;
+      } else {
+        std::cout << "Swing and a miss\n";
+        Offense.strikes = Offense.strikes + 1;
+        if (Offense.strikes == 3) {
+          Offense.outs++;
+          std::cout << "Out #" << Offense.outs << "!\n";
+          Offense.strikes = 0;
+        }
+        if (Offense.outs == 3) {
+          std::cout << "Offense Over! The side is retired. || Total Hits: " << Offense.hits << " ||\n";
+          Offense.running++;
+        }
       }
-      if (Game.outs == 3) {
-        std::cout << "Game Over! The side is retired. || Total Hits: " << Game.hits << " ||\n";
-        RecordSave.save(Game.hits);
-        //changes running value to 1 to signify 
-        //exiting the while loop that was keeping the game running
-        Game.running++;
-      }
-
     }
   }
-  while (Game.running == 0);
+  while (Offense.running == 0);
+}
+void CoreGameDefense::defense() {
+  CoreGameDefense Defense;
+  RecordSave RecordSave;
+  Defense.strikes = 0;
+  Defense.pitchlocation = 0;
+  Defense.outs = 0;
+  Defense.running = 0;
+  Defense.cpuhits = 0;
+
+  do {
+    srand(time(NULL));
+    Defense.pitchguess = rand() % 6 + 1;
+
+    std::cout << "Get Ready to pitch! ||" << "Strikes:" << Defense.strikes <<
+      "||\nType a location (number from 1 to 6) to choose a location to pitch." << "\n";
+    std::cin >> Defense.pitchlocation;
+
+    if (Defense.pitchguess == Defense.pitchlocation) {
+      std::cout << "Swing and a hit!\n";
+      Defense.cpuhits++;
+    } else {
+      if (Defense.pitchlocation > 6 || Defense.pitchlocation < 1) {
+        std::cout << "Invalid Input. Skipping to next inning.\n";
+        //fixing input buffer for reuse
+        std::cin.clear();
+        std::cin.ignore(10000, '\n');
+        Defense.running++;
+      } else {
+        std::cout << "Swing and a miss\n";
+        Defense.strikes = Defense.strikes + 1;
+        if (Defense.strikes == 3) {
+          Defense.outs++;
+          std::cout << "Out #" << Defense.outs << "!\n";
+          Defense.strikes = 0;
+        }
+        if (Defense.outs == 3) {
+          std::cout << "Defense Over! The side is retired. || Total Hits: " << Defense.hits << " ||\n";
+          RecordSave.save(Defense.hits, Defense.cpuhits);
+          Defense.running++;
+        }
+      }
+    }
+  }
+  while (Defense.running == 0);
 }
