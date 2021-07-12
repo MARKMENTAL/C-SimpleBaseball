@@ -27,7 +27,7 @@ void CoreGame::offense() {
     Offense.pitchlocation = rand() % 6 + 1;
 
     std::cout << "Get Ready for the pitch! ||" << "Strikes:" << Offense.strikes <<
-      "||\nType a location (number from 1 to 6) to guess where the offense will pitch" << "\n";
+      "||\nType a location (number from 1 to 6) to guess where the defense will pitch" << "\n";
     std::cin >> (Offense.pitchguess);
 
     if (Offense.pitchguess == Offense.pitchlocation) {
