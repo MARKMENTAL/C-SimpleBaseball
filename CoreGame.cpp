@@ -9,11 +9,6 @@ class CoreGame {
     int pitchlocation, pitchguess, strikes;
   int running, outs, hits, cpuhits;
   void offense();
-};
-class CoreGameDefense {
-  public:
-    int pitchlocation, pitchguess, strikes;
-  int running, outs, hits, cpuhits;
   void defense();
 };
 
@@ -62,8 +57,8 @@ void CoreGame::offense() {
   }
   while (Offense.running == 0);
 }
-void CoreGameDefense::defense() {
-  CoreGameDefense Defense;
+void CoreGame::defense() {
+  CoreGame Defense;
   RecordSave RecordSave;
   Defense.strikes = 0;
   Defense.pitchlocation = 0;
@@ -98,7 +93,7 @@ void CoreGameDefense::defense() {
           Defense.strikes = 0;
         }
         if (Defense.outs == 3) {
-          std::cout << "Defense Over! The side is retired. || Total Hits: " << Defense.hits << " ||\n";
+          std::cout << "Defense Over! The side is retired. || Total Hits: " << Defense.cpuhits << " ||\n";
           RecordSave.save(Defense.hits, Defense.cpuhits);
           Defense.running++;
         }
