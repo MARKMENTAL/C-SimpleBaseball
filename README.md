@@ -12,5 +12,6 @@ Docker will then give you a container ID at the end of the command output to run
 
 # Docker Run Instructions
 now run `docker run -i --name yourcontainernamehere containeridhere`
+The -i flag is important. This specifies interactive mode for Docker.
 
 The program should start after this.
