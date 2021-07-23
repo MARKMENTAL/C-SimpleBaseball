@@ -25,7 +25,6 @@ int CoreGame::offense(int inning,int humanpoints, int cpupoints)
 	Offense.running = 0;
 	Offense.hits = 0;
 	Offense.hitresult = 0;
-	Offense.battersonbase = 0;
 
 	do {
 		printf("***************\n Inning #: %d\nHuman Score: %d\nCPU Score: %d\n***************\n", inning, humanpoints, cpupoints);
@@ -53,6 +52,7 @@ int CoreGame::offense(int inning,int humanpoints, int cpupoints)
 						if (Offense.outs == 3)
 						{
 							std::cout << "Offense Over! The side is retired. || Total Hits: " << Offense.hits << " ||\n";
+							battersonbase = 0;
 							Offense.running++;
 						}
 					}
@@ -62,6 +62,7 @@ int CoreGame::offense(int inning,int humanpoints, int cpupoints)
 						if (Offense.outs == 3)
 						{
 							std::cout << "Offense Over! The side is retired. || Total Hits: " << Offense.hits << " ||\n";
+							battersonbase = 0;
 							Offense.running++;
 						}
 					}
@@ -131,6 +132,7 @@ int CoreGame::offense(int inning,int humanpoints, int cpupoints)
 				if (Offense.outs == 3)
 				{
 					std::cout << "Offense Over! The side is retired. || Total Hits: " << Offense.hits << " ||\n";
+					battersonbase = 0;
 					Offense.running++;
 				}
 			}
@@ -175,6 +177,7 @@ int CoreGame::defense(int inning, int humanpoints, int cpupoints)
 						if (Defense.outs == 3)
 						{
 							std::cout << "Offense Over! The side is retired. || Total Hits: " << Defense.hits << " ||\n";
+							battersonbase = 0;
 							Defense.running++;
 						}
 					}
@@ -184,6 +187,7 @@ int CoreGame::defense(int inning, int humanpoints, int cpupoints)
 						if (Defense.outs == 3)
 						{
 							std::cout << "Offense Over! The side is retired. || Total Hits: " << Defense.hits << " ||\n";
+							battersonbase = 0;
 							Defense.running++;
 						}
 					}
@@ -253,6 +257,7 @@ int CoreGame::defense(int inning, int humanpoints, int cpupoints)
 				if (Defense.outs == 3)
 				{
 					std::cout << "Defense Over! The side is retired. || Total Hits: " << Defense.cpuhits << " ||\n";
+					battersonbase = 0;
 					Defense.running++;
 				}
 			}

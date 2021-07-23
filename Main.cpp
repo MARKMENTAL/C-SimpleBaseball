@@ -27,7 +27,6 @@ int main() {
        if (humanpoints == cpupoints){
        cpupoints = Game.defense(i,humanpoints, cpupoints);
        i+=0.5;
-       
        }
      }
    }
