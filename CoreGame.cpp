@@ -7,14 +7,16 @@
 class CoreGame
 {
 	public:
-		int pitchlocation, pitchguess, hitresult, strikes, battersonbase;
-	int running, outs, hits, cpuhits;
-	int offense(int, int, int);
-	int defense(int, int, int);
+        int pitchlocation, pitchguess, hitresult, strikes, battersonbase;
+        int running, outs, hits, cpuhits;
+        int offense(int, int, int, std::string, std::string);
+        int defense(int, int, int, std::string, std::string);
+        int simoffense(int, int, int, std::string, std::string);
+        int simdefense(int, int, int, std::string, std::string);
 };
 
 
-int CoreGame::offense(int inning,int humanpoints, int cpupoints)
+int CoreGame::offense(int inning,int humanpoints, int cpupoints, std::string humanteam, std::string cputeam)
 {
 	CoreGame Offense;
 	//redeclaring potentially problematic variables
@@ -33,7 +35,7 @@ int CoreGame::offense(int inning,int humanpoints, int cpupoints)
 		int outmethod = 0;
 		outmethod = rand() % 2 + 1;
 
-		std::cout << "Get Ready for the pitch! ||" << "Strikes:" << Offense.strikes <<
+		std::cout <<"Team batting: " << humanteam <<"\n" << "Get Ready for the pitch! ||" << "Strikes:" << Offense.strikes <<
 			"|| " << "||Outs:" << Offense.outs << "||" << "\nType a location (number from 1 to 6) to guess where the defense will pitch" << "\n";
 		std::cin >> (Offense.pitchguess);
 
@@ -137,13 +139,12 @@ int CoreGame::offense(int inning,int humanpoints, int cpupoints)
 				}
 			}
 		}
-	}
-	while (Offense.running == 0);
+	} while (Offense.running == 0);
 	return humanpoints;
 }
 
 
-int CoreGame::defense(int inning, int humanpoints, int cpupoints)
+int CoreGame::defense(int inning, int humanpoints, int cpupoints, std::string humanteam, std::string cputeam)
 {
 	CoreGame Defense;
 	Defense.strikes = 0;
@@ -154,12 +155,11 @@ int CoreGame::defense(int inning, int humanpoints, int cpupoints)
 
 	do {
 		printf("***************\n Inning #: %d\nHuman Score: %d\nCPU Score: %d\n***************\n", inning, humanpoints, cpupoints);
-		srand(time(NULL));
 		Defense.pitchguess = rand() % 6 + 1;
 		int outmethod = 0;
 		outmethod = rand() % 2 + 1;
 
-		std::cout << "Get Ready to pitch! ||" << "Strikes:" << Defense.strikes <<
+		std::cout <<"Team batting: " << cputeam << "\n" << "Get Ready to pitch! ||" << "Strikes:" << Defense.strikes <<
 			"||" << "||Outs:" << Defense.outs << "||""\nType a location (number from 1 to 6) to choose a location to pitch." << "\n";
 		std::cin >> Defense.pitchlocation;
 
@@ -262,6 +262,192 @@ int CoreGame::defense(int inning, int humanpoints, int cpupoints)
 				}
 			}
 		}
+	}
+	while (Defense.running == 0);
+	return cpupoints;
+}
+
+int CoreGame::simoffense(int inning,int humanpoints, int cpupoints, std::string humanteam, std::string cputeam)
+{
+	CoreGame Offense;
+	//redeclaring potentially problematic variables
+	Offense.strikes = 0;
+	Offense.pitchlocation = 0;
+	Offense.pitchguess = 0;
+	Offense.outs = 0;
+	Offense.running = 0;
+	Offense.hits = 0;
+	Offense.hitresult = 0;
+
+	do {
+        srand(time(NULL));
+		Offense.pitchlocation = rand() % 6 + 1;
+		int outmethod = 0;
+		outmethod = rand() % 2 + 1;
+		Offense.pitchguess = rand() % 6 + 1;
+
+		if (Offense.pitchguess == Offense.pitchlocation)
+		{
+			Offense.hitresult = rand() % 4 + 0;
+
+			switch (Offense.hitresult)
+			{
+				case 0:
+					Offense.outs++;
+						if (Offense.outs == 3)
+						{
+							battersonbase = 0;
+							Offense.running++;
+						}
+
+
+					Offense.strikes = 0;
+					break;
+
+				case 1:
+					battersonbase++;
+					Offense.hits++;
+					Offense.strikes = 0;
+					break;
+
+				case 2:
+					if (battersonbase != 0)
+					{
+						humanpoints++;
+					}
+					battersonbase++;
+					Offense.hits++;
+					Offense.strikes = 0;
+					break;
+
+				case 3:
+					if (battersonbase != 0)
+					{
+						humanpoints++;
+					}
+					battersonbase++;
+					Offense.hits++;
+					Offense.strikes = 0;
+					break;
+
+				case 4:
+					humanpoints = humanpoints + battersonbase;
+					Offense.hits++;
+					Offense.strikes = 0;
+					break;
+			}
+		}
+
+			else
+			{
+				Offense.strikes = Offense.strikes + 1;
+				if (Offense.strikes == 3)
+				{
+					Offense.outs++;
+					Offense.strikes = 0;
+				}
+				if (Offense.outs == 3)
+				{
+					battersonbase = 0;
+					Offense.running++;
+				}
+			}
+
+	} while (Offense.running == 0);
+	return humanpoints;
+}
+
+int CoreGame::simdefense(int inning, int humanpoints, int cpupoints, std::string humanteam, std::string cputeam)
+{
+	CoreGame Defense;
+	Defense.strikes = 0;
+	Defense.pitchlocation = 0;
+	Defense.outs = 0;
+	Defense.running = 0;
+	Defense.cpuhits = 0;
+
+	do {
+		Defense.pitchguess = rand() % 6 + 1;
+		int outmethod = 0;
+		outmethod = rand() % 2 + 1;
+        Defense.pitchlocation = rand() % 6 + 1;
+
+		if (Defense.pitchguess == Defense.pitchlocation)
+		{
+			Defense.hitresult = rand() % 4 + 0;
+			switch (Defense.hitresult)
+			{
+				case 0:
+					Defense.outs++;
+					if (outmethod == 1)
+					{
+						if (Defense.outs == 3)
+						{
+							battersonbase = 0;
+							Defense.running++;
+						}
+					}
+					if (outmethod == 2)
+					{
+						if (Defense.outs == 3)
+						{
+							battersonbase = 0;
+							Defense.running++;
+						}
+					}
+					Defense.strikes = 0;
+					break;
+
+				case 1:
+					battersonbase++;
+					Defense.cpuhits++;
+					Defense.strikes = 0;
+					break;
+
+				case 2:
+					if (battersonbase != 0)
+					{
+						cpupoints++;
+					}
+					battersonbase++;
+					Defense.cpuhits++;
+					Defense.strikes = 0;
+					break;
+
+				case 3:
+					if (battersonbase != 0)
+					{
+						cpupoints++;
+					}
+					battersonbase++;
+					Defense.cpuhits++;
+					Defense.strikes = 0;
+					break;
+
+				case 4:
+					cpupoints = cpupoints + battersonbase;
+					Defense.cpuhits++;
+					Defense.strikes = 0;
+					break;
+			}
+		}
+
+
+			else
+			{
+				Defense.strikes = Defense.strikes + 1;
+				if (Defense.strikes == 3)
+				{
+					Defense.outs++;
+					Defense.strikes = 0;
+				}
+				if (Defense.outs == 3)
+				{
+					battersonbase = 0;
+					Defense.running++;
+				}
+			}
+
 	}
 	while (Defense.running == 0);
 	return cpupoints;
